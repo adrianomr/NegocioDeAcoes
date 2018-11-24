@@ -31,7 +31,7 @@ public class EmissorPrecos {
                     precos.add(preco);
                     IMonitorEmissorPressos.setPreco(preco);
                     try {
-                        sleep(5000);
+                        sleep(4999);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
