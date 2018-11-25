@@ -10,12 +10,15 @@ public class Conta {
     @SequenceGenerator(
             name = "answer_generator",
             sequenceName = "answer_sequence",
-            initialValue = 1000
+            initialValue = 0
     )
     private Long id;
 
     @Column(columnDefinition = "varchar(100)")
     private String descricao;
+
+    @Column(columnDefinition = "numeric(20,4)")
+    private Double saldo;
 
     public Long getId() {
         return id;
@@ -31,5 +34,13 @@ public class Conta {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Double saldo) {
+        this.saldo = saldo;
     }
 }

@@ -34,6 +34,7 @@ public class ContaController {
         return contaRepository.findById(contaId)
                 .map(conta -> {
                     conta.setDescricao(contaRequest.getDescricao());
+                    conta.setSaldo(contaRequest.getSaldo());
                     return contaRepository.save(conta);
                 }).orElseThrow(() -> new ResourceNotFoundException("conta not found with id " + contaId));
     }
