@@ -1,16 +1,14 @@
 package NegocioDeAcoes.NegocioDeAcoes.model;
 
-import NegocioDeAcoes.NegocioDeAcoes.interfaces.IMonitorEmissorPressos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "monitoramento")
-public class Monitoramento implements IMonitorEmissorPressos {
+public class Monitoramento{
 
     @Id
     @GeneratedValue(generator = "answer_generator")
@@ -35,13 +33,6 @@ public class Monitoramento implements IMonitorEmissorPressos {
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @JsonIgnore
     private Conta conta;
-
-    @Transient
-    private double precoAtual;
-
-    public Monitoramento() {
-        precoAtual = 0;
-    }
 
     public Long getId() {
         return id;
@@ -84,12 +75,6 @@ public class Monitoramento implements IMonitorEmissorPressos {
     }
 
     @Override
-    public void setPreco(double preco) {
-        this.precoAtual = preco;
-        System.out.println(preco);
-    }
-
-    @Override
     public String toString() {
         return "Monitoramento{" +
                 "id=" + id +
@@ -97,7 +82,6 @@ public class Monitoramento implements IMonitorEmissorPressos {
                 ", precoCompra=" + precoCompra +
                 ", precoVenda=" + precoVenda +
                 ", conta=" + conta +
-                ", precoAtual=" + precoAtual +
                 '}';
     }
 }
