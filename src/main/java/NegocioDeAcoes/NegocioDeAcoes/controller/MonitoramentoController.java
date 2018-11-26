@@ -7,6 +7,7 @@ import NegocioDeAcoes.NegocioDeAcoes.repository.MonitoramentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -71,6 +72,11 @@ public class MonitoramentoController {
                                              @Valid @RequestBody Double preco) {
         monitoramentoRepository.findById(monitoramentoId).map(monitoramento -> {
             System.out.println(monitoramento.getEmpresa()+" - "+preco);
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.postForObject(
+                    "http://localhost:8090/acao/",
+                    "Compra",
+                    ResponseEntity.class);
             return ResponseEntity.ok().build();
         });
     }
