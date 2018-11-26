@@ -65,4 +65,14 @@ public class MonitoramentoController {
 
     }
 
+    @PostMapping("/contas/{contaId}/monitoramentos/{monitoramentoId}/preco")
+    public void updateMonitoramento(@PathVariable Long contaId,
+                                             @PathVariable Long monitoramentoId,
+                                             @Valid @RequestBody Double preco) {
+        monitoramentoRepository.findById(monitoramentoId).map(monitoramento -> {
+            System.out.println(monitoramento.getEmpresa()+" - "+preco);
+            return ResponseEntity.ok().build();
+        });
+    }
+
 }
