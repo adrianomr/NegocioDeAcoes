@@ -71,12 +71,16 @@ public class MonitoramentoController {
                                              @PathVariable Long monitoramentoId,
                                              @Valid @RequestBody Double preco) {
         monitoramentoRepository.findById(monitoramentoId).map(monitoramento -> {
-            System.out.println(monitoramento.getEmpresa()+" - "+preco);
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForObject(
-                    "http://localhost:8090/acao/",
-                    "Compra",
-                    ResponseEntity.class);
+//            [YZK] Compra: 10.15, Volume: 10000, Saldo: 0.00
+            if(preco < monitoramento.getPrecoCompra() || preco > monitoramento.getPrecoVenda()) {
+                String acao = "";
+                if (preco < monitoramento.getPrecoCompra()) {
+                    acao = "Compra";
+                } else if (preco > monitoramento.getPrecoVenda()) {
+                    acao = "Venda";
+                }
+                System.out.println("[" + monitoramento.getEmpresa() + "] " + acao + ":" + preco + ", Volume: , Saldo: ");
+            }
             return ResponseEntity.ok().build();
         });
     }
