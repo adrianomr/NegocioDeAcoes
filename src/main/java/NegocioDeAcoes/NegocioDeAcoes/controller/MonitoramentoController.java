@@ -7,7 +7,6 @@ import NegocioDeAcoes.NegocioDeAcoes.repository.MonitoramentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -68,19 +67,34 @@ public class MonitoramentoController {
 
     @PostMapping("/contas/{contaId}/monitoramentos/{monitoramentoId}/preco")
     public void updateMonitoramento(@PathVariable Long contaId,
-                                             @PathVariable Long monitoramentoId,
-                                             @Valid @RequestBody Double preco) {
+                                    @PathVariable Long monitoramentoId,
+                                    @Valid @RequestBody Double preco) {
         monitoramentoRepository.findById(monitoramentoId).map(monitoramento -> {
 //            [YZK] Compra: 10.15, Volume: 10000, Saldo: 0.00
-            if(preco < monitoramento.getPrecoCompra() || preco > monitoramento.getPrecoVenda()) {
-                String acao = "";
-                if (preco < monitoramento.getPrecoCompra()) {
-                    acao = "Compra";
-                } else if (preco > monitoramento.getPrecoVenda()) {
-                    acao = "Venda";
-                }
-                System.out.println("[" + monitoramento.getEmpresa() + "] " + acao + ":" + preco + ", Volume: , Saldo: ");
-            }
+            contaRepository.findById(contaId)
+                    .map(conta -> {
+                        int volume = 0;
+                        double valorNegociado = 0d;
+                        if (preco < monitoramento.getPrecoCompra() || preco > monitoramento.getPrecoVenda()) {
+                            String acao = "";
+                            if (preco < monitoramento.getPrecoCompra()) {
+                                acao = "Compra";
+                                volume = (int) Math.round(conta.getSaldo() / preco);
+                                valorNegociado = volume*preco;
+                                conta.setSaldo(conta.getSaldo()-valorNegociado);
+                            } else if (preco > monitoramento.getPrecoVenda()) {
+                                acao = "Venda";
+                            }
+                            System.out.println("["
+                                    + monitoramento.getEmpresa() + "] "
+                                    + acao +
+                                    "Preco Unitario:" + preco + "," +
+                                    " Volume:" + volume + " ," +
+                                    "Valor Negociado:" + valorNegociado +
+                                    " Saldo: "+conta.getSaldo());
+                        }
+                        return ResponseEntity.ok().build();
+                    }).orElseThrow(() -> new ResourceNotFoundException("Conta not found with id " + contaId));
             return ResponseEntity.ok().build();
         });
     }
