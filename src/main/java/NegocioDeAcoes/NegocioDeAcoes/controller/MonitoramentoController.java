@@ -89,8 +89,12 @@ public class MonitoramentoController {
                                     conta.setSaldo(conta.getSaldo() - valorNegociado);
                                 }
                             } else if (preco > monitoramento.getPrecoVenda()) {
-                                acao = "Venda";
                                 volume = transacaoRepository.getQuantidadeAcoesByConta(monitoramento.getEmpresa(), contaId);
+                                if(volume > 0d){
+                                    acao = "Venda";
+                                    valorNegociado = volume*preco;
+                                    conta.setSaldo(conta.getSaldo() + valorNegociado);
+                                }
                             }
                             if(conta.getSaldo()>=0d && !acao.isEmpty()) {
                                 contaRepository.save(conta);
