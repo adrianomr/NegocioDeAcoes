@@ -17,7 +17,6 @@ public class EmissorPrecos {
     public void iniciaEmissao(long tempoMaximo, double precoCompra, double precoVenda, long monitoramento_id, long conta_id){
         long tempoInicial = currentTimeMillis();
         long tempoAtual = currentTimeMillis();
-        System.out.println(precoCompra+" - "+precoVenda);;
         if(tempoMaximo > 0){
             while ((tempoAtual - tempoInicial) < tempoMaximo){
                 geraPreco(precoCompra, precoVenda, monitoramento_id, conta_id);
@@ -33,15 +32,11 @@ public class EmissorPrecos {
     public void geraPreco(double precoCompra, double precoVenda, long monitoramento_id, long conta_id){
         double precoMaximo = precoVenda + (precoVenda/10);
         double precoMinimo = precoCompra - (precoCompra/10);
-        System.out.println(this.toString());
         double preco = ThreadLocalRandom.current().nextDouble(precoMinimo, precoMaximo);
-//        IMonitorEmissorPressos.setPreco(preco);
-        System.out.println(preco);
         RestTemplate restTemplate = new RestTemplate();
 
         String monitoramentoLista = restTemplate.getForObject(
                 "http://localhost:8080/contas/"+conta_id+"/monitoramentos", String.class);
-        System.out.println(monitoramentoLista);
 
         restTemplate.postForObject(
                 "http://localhost:8080/contas/"+conta_id+"/monitoramentos/"+monitoramento_id+"/preco",

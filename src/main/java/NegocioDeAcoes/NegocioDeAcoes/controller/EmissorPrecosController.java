@@ -21,7 +21,6 @@ public class EmissorPrecosController {
                 "http://localhost:8080/contas/1101/monitoramentos", Monitoramento[].class);
         Monitoramento[] monitoramentos = monitoramentoLista;
         for (Monitoramento monitoramento : monitoramentos) {
-            System.out.println(monitoramento.toString());
             emissorPrecos.iniciaEmissao(0, monitoramento.getPrecoCompra(), monitoramento.getPrecoVenda(), monitoramento.getId(), 1101);
         }
         return ResponseEntity.ok().build();

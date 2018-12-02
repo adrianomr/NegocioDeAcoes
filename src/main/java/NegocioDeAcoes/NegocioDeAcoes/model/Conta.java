@@ -43,4 +43,12 @@ public class Conta {
     public void setSaldo(Double saldo) {
         this.saldo = saldo;
     }
+
+    public void comprar(){
+
+    }
+
+    public void vender(){
+
+    }
 }
