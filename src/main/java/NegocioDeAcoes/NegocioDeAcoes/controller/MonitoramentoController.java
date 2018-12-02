@@ -90,6 +90,7 @@ public class MonitoramentoController {
                                 }
                             } else if (preco > monitoramento.getPrecoVenda()) {
                                 acao = "Venda";
+                                volume = transacaoRepository.getQuantidadeAcoesByConta(monitoramento.getEmpresa(), contaId);
                             }
                             if(conta.getSaldo()>=0d && !acao.isEmpty()) {
                                 contaRepository.save(conta);
