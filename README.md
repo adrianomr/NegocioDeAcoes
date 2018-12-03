@@ -6,7 +6,7 @@ Foram implementados 4 serviços, disponibilizados através de Webservices REST.
 
 O sistema foi desenvolvido em java com auxílio da plataforma Spring Boot. Como biblioteca de persistência, foi utilizado Spring Data JPA (que já vem com o hibernate). A escolha do Spring Data JPA deu-se pelo fato de ele trabalhar com implementação de interfaces, permitindo assim a reutilização do código para diferentes soluçoes de bibliotecas de persistência. Foi utilizado a biblioteca Spring WEB para suporte ao gerenciamento de uma plataforma WEB. E por fim, foi utilizada a biblioteca do PostgreSQL para fazer a integração com o banco de dados instalado na máquina.
 
-Os fontes iniciais foram gerados através do Spring Initializr, sendo possível já selecionar as bibliotecas utilizadas no site do Spring Initializr, e apenas baixar os arquivos inicias de configuração do Spring.
+Os fontes iniciais foram gerados através do Spring Initializr, sendo possível já selecionar as bibliotecas utilizadas através do site do Spring Initializr. Depois de selecionadas as bibliotecas, e nomeado o projeto, foi feito download dos fontes gerados pelo site.
 
 Foi feito um backup do banco utilizado em desenvolvimento e anexado na pasta "/src/main/sql". As tabelas utilizadas na aplicação são: conta, monitoramento e transacoes.
 
