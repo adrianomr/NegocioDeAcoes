@@ -1,8 +1,7 @@
 package NegocioDeAcoes.NegocioDeAcoes.controller;
 
 import NegocioDeAcoes.NegocioDeAcoes.exception.ResourceNotFoundException;
-import NegocioDeAcoes.NegocioDeAcoes.model.Conta;
-import NegocioDeAcoes.NegocioDeAcoes.model.EmissorPrecos;
+import NegocioDeAcoes.NegocioDeAcoes.services.EmissorPrecos;
 import NegocioDeAcoes.NegocioDeAcoes.model.Monitoramento;
 import NegocioDeAcoes.NegocioDeAcoes.model.Transacao;
 import NegocioDeAcoes.NegocioDeAcoes.repository.ContaRepository;
@@ -15,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class MonitoramentoController {
+
+    @Autowired
+    EmissorPrecos emissorPrecos;
 
     @Autowired
     private MonitoramentoRepository monitoramentoRepository;
@@ -40,12 +41,10 @@ public class MonitoramentoController {
         return contaRepository.findById(contaId)
                 .map(conta -> {
                     monitoramento.setConta(conta);
-
-                    EmissorPrecos emissorPrecos = new EmissorPrecos();
                     monitoramentoRepository.save(monitoramento);
                     MonitoramentoListaService monitoramentoListaService = new MonitoramentoListaService(monitoramentoRepository);
                     monitoramentoListaService.getMonitoramentos().put(monitoramento.getId(), monitoramento);
-                    emissorPrecos.iniciaEmissao(0, monitoramento.getId());
+                    emissorPrecos.iniciaEmissao(monitoramento.getId());
                     return monitoramento;
                 }).orElseThrow(() -> new ResourceNotFoundException("Conta not found with id " + contaId));
     }

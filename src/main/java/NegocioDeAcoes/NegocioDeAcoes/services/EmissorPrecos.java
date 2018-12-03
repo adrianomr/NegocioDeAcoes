@@ -1,5 +1,8 @@
-package NegocioDeAcoes.NegocioDeAcoes.model;
+package NegocioDeAcoes.NegocioDeAcoes.services;
 
+import NegocioDeAcoes.NegocioDeAcoes.model.Monitoramento;
+import NegocioDeAcoes.NegocioDeAcoes.model.MonitoramentoLista;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -13,32 +16,27 @@ import static java.lang.Thread.sleep;
 @Service
 public class EmissorPrecos {
 
+    private final RestTemplate restTemplate;
 
-    public void iniciaEmissao(long tempoMaximo, long monitoramento_id){
+    public EmissorPrecos(RestTemplateBuilder restTemplateBuilder) {
+        restTemplate = restTemplateBuilder.build();
+    }
+
+    public void iniciaEmissao(long monitoramento_id){
         Thread t = new Thread(() -> {
-            long tempoInicial = currentTimeMillis();
-            long tempoAtual = currentTimeMillis();
-            if(tempoMaximo > 0){
-                while ((tempoAtual - tempoInicial) < tempoMaximo){
-                    geraPreco(monitoramento_id);
-                    tempoAtual = currentTimeMillis();
-                }
-            }else{
-                while(true){
-                    geraPreco(monitoramento_id);
-                }
+            while(true){
+                geraPreco(monitoramento_id);
             }
         });
         t.start();
     }
 
-    public void geraPreco(long monitoramento_id){
+    public Double geraPreco(long monitoramento_id){
         Monitoramento monitoramento = MonitoramentoLista.getMonitoramentos().get(monitoramento_id);
         double precoMaximo = monitoramento.getPrecoVenda() + (monitoramento.getPrecoVenda()/10);
         double precoMinimo = monitoramento.getPrecoCompra() - (monitoramento.getPrecoCompra()/10);
         double preco = ThreadLocalRandom.current().nextDouble(precoMinimo, precoMaximo);
         System.out.println("Monitoramento: "+monitoramento_id+", Preco:"+preco);
-        RestTemplate restTemplate = new RestTemplate();
         restTemplate.postForObject(
                 "http://localhost:8080/contas/"+monitoramento.getConta().getId()+
                         "/monitoramentos/"+monitoramento_id+
@@ -49,6 +47,7 @@ public class EmissorPrecos {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return preco;
     }
 
 }

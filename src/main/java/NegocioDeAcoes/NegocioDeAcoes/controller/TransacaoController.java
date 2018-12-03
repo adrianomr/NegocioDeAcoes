@@ -43,15 +43,17 @@ public class TransacaoController {
             throw new ResourceNotFoundException("conta not found with id " + contaId);
         }
 
-        return transacaoRepository.findById(monitoramentoId)
+        return contaRepository.findById(contaId).map(conta -> {
+            return transacaoRepository.findById(monitoramentoId)
                 .map(transacao -> {
-                    transacao.setConta(monitoramentoRequest.getConta());
+                    transacao.setConta(conta);
                     transacao.setEmpresa(monitoramentoRequest.getEmpresa());
                     transacao.setPrecoUnitario(monitoramentoRequest.getPrecoUnitario());
                     transacao.setQuantidade(monitoramentoRequest.getQuantidade());
                     transacao.setAcao(monitoramentoRequest.getAcao());
                     return transacaoRepository.save(transacao);
                 }).orElseThrow(() -> new ResourceNotFoundException("transacao not found with id " + monitoramentoId));
+        }).orElseThrow(() -> new ResourceNotFoundException("monitoramento not found with id " + monitoramentoId));
     }
 
     @DeleteMapping("/contas/{contaId}/transacoes/{monitoramentoId}")
