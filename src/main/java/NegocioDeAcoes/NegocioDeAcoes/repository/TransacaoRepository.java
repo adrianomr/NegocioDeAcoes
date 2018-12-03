@@ -12,12 +12,14 @@ import java.util.List;
 public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
     List<Transacao> findByContaId(Long contaId);
     @Query(value = "SELECT " +
-            "   SUM(" +
-            "       CASE t.acao " +
-            "       WHEN 'Compra' then t.quantidade " +
-            "       WHEN 'Venda' THEN -t.quantidade " +
-            "       ELSE 0 " +
-            "   END) " +
+            "   COALESCE(" +
+            "       SUM(" +
+            "           CASE t.acao " +
+            "           WHEN 'Compra' then t.quantidade " +
+            "           WHEN 'Venda' THEN -t.quantidade " +
+            "           ELSE 0 " +
+            "       END)" +
+            "   , 0) " +
             "FROM transacoes AS t " +
             "WHERE " +
             "   t.empresa = :empresa" +

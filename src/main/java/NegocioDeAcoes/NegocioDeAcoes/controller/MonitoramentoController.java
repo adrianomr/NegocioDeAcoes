@@ -1,11 +1,13 @@
 package NegocioDeAcoes.NegocioDeAcoes.controller;
 
 import NegocioDeAcoes.NegocioDeAcoes.exception.ResourceNotFoundException;
+import NegocioDeAcoes.NegocioDeAcoes.model.EmissorPrecos;
 import NegocioDeAcoes.NegocioDeAcoes.model.Monitoramento;
 import NegocioDeAcoes.NegocioDeAcoes.model.Transacao;
 import NegocioDeAcoes.NegocioDeAcoes.repository.ContaRepository;
 import NegocioDeAcoes.NegocioDeAcoes.repository.MonitoramentoRepository;
 import NegocioDeAcoes.NegocioDeAcoes.repository.TransacaoRepository;
+import NegocioDeAcoes.NegocioDeAcoes.services.MonitoramentoListaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ public class MonitoramentoController {
     private ContaRepository contaRepository;
 
     @Autowired
-    TransacaoRepository transacaoRepository;
+    private TransacaoRepository transacaoRepository;
 
     @GetMapping("/contas/{contaId}/monitoramentos")
     public List<Monitoramento> getMonitoramentosByContaId(@PathVariable Long contaId) {
@@ -36,7 +38,13 @@ public class MonitoramentoController {
         return contaRepository.findById(contaId)
                 .map(conta -> {
                     monitoramento.setConta(conta);
-                    return monitoramentoRepository.save(monitoramento);
+
+                    EmissorPrecos emissorPrecos = new EmissorPrecos();
+                    monitoramentoRepository.save(monitoramento);
+                    MonitoramentoListaService monitoramentoListaService = new MonitoramentoListaService(monitoramentoRepository);
+                    monitoramentoListaService.getMonitoramentos().put(monitoramento.getId(), monitoramento);
+                    emissorPrecos.iniciaEmissao(0, monitoramento.getId());
+                    return monitoramento;
                 }).orElseThrow(() -> new ResourceNotFoundException("Conta not found with id " + contaId));
     }
 
@@ -54,6 +62,8 @@ public class MonitoramentoController {
                     monitoramento.setEmpresa(monitoramentoRequest.getEmpresa());
                     monitoramento.setPrecoCompra(monitoramentoRequest.getPrecoCompra());
                     monitoramento.setPrecoVenda(monitoramentoRequest.getPrecoVenda());
+                    MonitoramentoListaService monitoramentoListaService = new MonitoramentoListaService(monitoramentoRepository);
+                    monitoramentoListaService.getMonitoramentos().put(monitoramento.getId(), monitoramento);
                     return monitoramentoRepository.save(monitoramento);
                 }).orElseThrow(() -> new ResourceNotFoundException("monitoramento not found with id " + monitoramentoId));
     }
@@ -65,6 +75,8 @@ public class MonitoramentoController {
         return monitoramentoRepository.findById(monitoramentoId)
                 .map(monitoramento -> {
                     monitoramentoRepository.delete(monitoramento);
+                    MonitoramentoListaService monitoramentoListaService = new MonitoramentoListaService(monitoramentoRepository);
+                    monitoramentoListaService.getMonitoramentos().remove(monitoramento.getId());
                     return ResponseEntity.ok().build();
                 }).orElseThrow(() -> new ResourceNotFoundException("monitoramento not found with id " + monitoramentoId));
 
