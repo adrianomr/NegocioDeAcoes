@@ -1,0 +1,273 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.6 (Ubuntu 10.6-0ubuntu0.18.04.1)
+-- Dumped by pg_dump version 10.6 (Ubuntu 10.6-0ubuntu0.18.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: answer_sequence; Type: SEQUENCE; Schema: public; Owner: adriano
+--
+
+CREATE SEQUENCE public.answer_sequence
+    START WITH 1000
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.answer_sequence OWNER TO adriano;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: answers; Type: TABLE; Schema: public; Owner: adriano
+--
+
+CREATE TABLE public.answers (
+    id bigint NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    text text,
+    question_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.answers OWNER TO adriano;
+
+--
+-- Name: conta; Type: TABLE; Schema: public; Owner: adriano
+--
+
+CREATE TABLE public.conta (
+    id bigint NOT NULL,
+    descricao character varying(100),
+    saldo numeric(20,4)
+);
+
+
+ALTER TABLE public.conta OWNER TO adriano;
+
+--
+-- Name: monitoramento; Type: TABLE; Schema: public; Owner: adriano
+--
+
+CREATE TABLE public.monitoramento (
+    id bigint NOT NULL,
+    empresa character varying(100),
+    preco_compra numeric(20,4),
+    preco_venda numeric(20,4),
+    conta_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.monitoramento OWNER TO adriano;
+
+--
+-- Name: question_sequence; Type: SEQUENCE; Schema: public; Owner: adriano
+--
+
+CREATE SEQUENCE public.question_sequence
+    START WITH 1000
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.question_sequence OWNER TO adriano;
+
+--
+-- Name: questions; Type: TABLE; Schema: public; Owner: adriano
+--
+
+CREATE TABLE public.questions (
+    id bigint NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    description text,
+    title character varying(100)
+);
+
+
+ALTER TABLE public.questions OWNER TO adriano;
+
+--
+-- Name: transacoes; Type: TABLE; Schema: public; Owner: adriano
+--
+
+CREATE TABLE public.transacoes (
+    id bigint NOT NULL,
+    acao character varying(6),
+    empresa character varying(100),
+    preco_unitario numeric(20,4),
+    quantidade numeric(10,4),
+    conta_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.transacoes OWNER TO adriano;
+
+--
+-- Data for Name: answers; Type: TABLE DATA; Schema: public; Owner: adriano
+--
+
+COPY public.answers (id, created_at, updated_at, text, question_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: conta; Type: TABLE DATA; Schema: public; Owner: adriano
+--
+
+COPY public.conta (id, descricao, saldo) FROM stdin;
+1102	Caixa	100000.0000
+1101	Banco do Brasil	449253.9693
+\.
+
+
+--
+-- Data for Name: monitoramento; Type: TABLE DATA; Schema: public; Owner: adriano
+--
+
+COPY public.monitoramento (id, empresa, preco_compra, preco_venda, conta_id) FROM stdin;
+1151	Facebook	10000.0000	12000.0000	1101
+1152	Google	11000.0000	13000.0000	1101
+2551	Instagran	11000.0000	13000.0000	1101
+2801	Linkedin	10000.0000	11000.0000	1101
+\.
+
+
+--
+-- Data for Name: questions; Type: TABLE DATA; Schema: public; Owner: adriano
+--
+
+COPY public.questions (id, created_at, updated_at, description, title) FROM stdin;
+\.
+
+
+--
+-- Data for Name: transacoes; Type: TABLE DATA; Schema: public; Owner: adriano
+--
+
+COPY public.transacoes (id, acao, empresa, preco_unitario, quantidade, conta_id) FROM stdin;
+2951	Compra	Google	10081.0356	9.9196	1101
+2952	Venda	Google	13352.4377	9.9196	1101
+2953	Compra	Linkedin	9455.4687	14.0079	1101
+2954	Compra	Instagran	10144.4123	13.0565	1101
+2955	Venda	Instagran	13821.2135	13.0565	1101
+2956	Venda	Linkedin	11803.7052	14.0079	1101
+2957	Compra	Facebook	9872.1036	35.0282	1101
+2958	Venda	Facebook	12825.4940	35.0282	1101
+\.
+
+
+--
+-- Name: answer_sequence; Type: SEQUENCE SET; Schema: public; Owner: adriano
+--
+
+SELECT pg_catalog.setval('public.answer_sequence', 3000, true);
+
+
+--
+-- Name: question_sequence; Type: SEQUENCE SET; Schema: public; Owner: adriano
+--
+
+SELECT pg_catalog.setval('public.question_sequence', 1000, false);
+
+
+--
+-- Name: answers answers_pkey; Type: CONSTRAINT; Schema: public; Owner: adriano
+--
+
+ALTER TABLE ONLY public.answers
+    ADD CONSTRAINT answers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: conta conta_pkey; Type: CONSTRAINT; Schema: public; Owner: adriano
+--
+
+ALTER TABLE ONLY public.conta
+    ADD CONSTRAINT conta_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: monitoramento monitoramento_pkey; Type: CONSTRAINT; Schema: public; Owner: adriano
+--
+
+ALTER TABLE ONLY public.monitoramento
+    ADD CONSTRAINT monitoramento_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: questions questions_pkey; Type: CONSTRAINT; Schema: public; Owner: adriano
+--
+
+ALTER TABLE ONLY public.questions
+    ADD CONSTRAINT questions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: transacoes transacoes_pkey; Type: CONSTRAINT; Schema: public; Owner: adriano
+--
+
+ALTER TABLE ONLY public.transacoes
+    ADD CONSTRAINT transacoes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: answers fk3erw1a3t0r78st8ty27x6v3g1; Type: FK CONSTRAINT; Schema: public; Owner: adriano
+--
+
+ALTER TABLE ONLY public.answers
+    ADD CONSTRAINT fk3erw1a3t0r78st8ty27x6v3g1 FOREIGN KEY (question_id) REFERENCES public.questions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: transacoes fkfromql6hfqngtole1moigcce0; Type: FK CONSTRAINT; Schema: public; Owner: adriano
+--
+
+ALTER TABLE ONLY public.transacoes
+    ADD CONSTRAINT fkfromql6hfqngtole1moigcce0 FOREIGN KEY (conta_id) REFERENCES public.conta(id);
+
+
+--
+-- Name: monitoramento fkin7e7g0nwu6rplvm2qhk2km1l; Type: FK CONSTRAINT; Schema: public; Owner: adriano
+--
+
+ALTER TABLE ONLY public.monitoramento
+    ADD CONSTRAINT fkin7e7g0nwu6rplvm2qhk2km1l FOREIGN KEY (conta_id) REFERENCES public.conta(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
