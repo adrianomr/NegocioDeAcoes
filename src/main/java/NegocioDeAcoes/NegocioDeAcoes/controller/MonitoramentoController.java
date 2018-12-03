@@ -1,6 +1,7 @@
 package NegocioDeAcoes.NegocioDeAcoes.controller;
 
 import NegocioDeAcoes.NegocioDeAcoes.exception.ResourceNotFoundException;
+import NegocioDeAcoes.NegocioDeAcoes.model.Conta;
 import NegocioDeAcoes.NegocioDeAcoes.model.EmissorPrecos;
 import NegocioDeAcoes.NegocioDeAcoes.model.Monitoramento;
 import NegocioDeAcoes.NegocioDeAcoes.model.Transacao;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class MonitoramentoController {
@@ -52,20 +54,22 @@ public class MonitoramentoController {
     public Monitoramento updateMonitoramento(@PathVariable Long contaId,
                                              @PathVariable Long monitoramentoId,
                                              @Valid @RequestBody Monitoramento monitoramentoRequest) {
+        Monitoramento monitoramentoRetorno = new Monitoramento();
         if (!contaRepository.existsById(contaId)) {
             throw new ResourceNotFoundException("conta not found with id " + contaId);
         }
-
-        return monitoramentoRepository.findById(monitoramentoId)
-                .map(monitoramento -> {
-                    monitoramento.setConta(monitoramentoRequest.getConta());
-                    monitoramento.setEmpresa(monitoramentoRequest.getEmpresa());
-                    monitoramento.setPrecoCompra(monitoramentoRequest.getPrecoCompra());
-                    monitoramento.setPrecoVenda(monitoramentoRequest.getPrecoVenda());
-                    MonitoramentoListaService monitoramentoListaService = new MonitoramentoListaService(monitoramentoRepository);
-                    monitoramentoListaService.getMonitoramentos().put(monitoramento.getId(), monitoramento);
-                    return monitoramentoRepository.save(monitoramento);
-                }).orElseThrow(() -> new ResourceNotFoundException("monitoramento not found with id " + monitoramentoId));
+        return contaRepository.findById(contaId).map(conta -> {
+            return monitoramentoRepository.findById(monitoramentoId)
+                    .map(monitoramento -> {
+                        monitoramento.setConta(conta);
+                        monitoramento.setEmpresa(monitoramentoRequest.getEmpresa());
+                        monitoramento.setPrecoCompra(monitoramentoRequest.getPrecoCompra());
+                        monitoramento.setPrecoVenda(monitoramentoRequest.getPrecoVenda());
+                        MonitoramentoListaService monitoramentoListaService = new MonitoramentoListaService(monitoramentoRepository);
+                        monitoramentoListaService.getMonitoramentos().put(monitoramento.getId(), monitoramento);
+                        return monitoramentoRepository.save(monitoramento);
+                    }).orElseThrow(() -> new ResourceNotFoundException("monitoramento not found with id " + monitoramentoId));
+        }).orElseThrow(() -> new ResourceNotFoundException("monitoramento not found with id " + monitoramentoId));
     }
 
     @DeleteMapping("/contas/{contaId}/monitoramentos/{monitoramentoId}")
