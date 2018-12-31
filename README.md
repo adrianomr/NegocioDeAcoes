@@ -17,27 +17,47 @@ localhost:8080/emissor-precos/iniciar
 GET - inicia a emissão de preços
 
 Conta
+
 localhost:8080/contas/
+
 GET - Listagem de Contas
+
 POST - Inclusão de Contas
+
 localhost:8080/contas/{conta_id}
+
 PUT - Alteração de Contas
+
 DELETE - Remoção de Contas
 
 Monitoramento
+
 localhost:8080/contas/{conta_id}/monitoramentos
+
 GET - Listagem de Monitoramentos
+
 POST - Inclusão de Monitoramentos
+
 localhost:8080/contas/{conta_id}/monitoramentos/{transacoes_id}
+
 PUT - Alteração de Monitoramentos
+
 DELETE - Remoção de Monitoramentos
 
 Monitoramento
+
 localhost:8080/contas/{conta_id}/transacoes
+
 GET - Listagem de Monitoramentos
+
 POST - Inclusão de Monitoramentos
+
 localhost:8080/contas/{conta_id}/transacoes/{transacoes_id}
+
 PUT - Alteração de Monitoramentos
+
 DELETE - Remoção de Monitoramentos
+
 localhost:8080/contas/{conta_id}/monitoramentos/{monitoramento_id}/preco
+
 POST - Método para receber preco de ações.
