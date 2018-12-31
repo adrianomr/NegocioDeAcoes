@@ -12,13 +12,13 @@ Foi feito um backup do banco utilizado em desenvolvimento e anexado na pasta "/s
 
 Três dos serviços desenvolvidos foram para dar acesso a esses recursos mencionados. O último é um serviço de emissão de preços. Depois de inicializada a aplicação, é necessário fazer uma requisição GET para o serviço de emissão de preços, para iniciar a emissão. Após iniciada a emissão, o sistema busca no banco os lançamentos de monitoramento, e começa a enviar preços ao para o serviço de monitoramento. Este serviço reage aos preços emitidos conforme uma regra e decidi se deve comprar ou vender ações de uma determinada empresa. Em seguida, serão listados os serviços e os seus endpoints disponíveis:
 
-*Emissor de Preços
+* Emissor de Preços
 
 localhost:8080/emissor-precos/iniciar
 
 GET - inicia a emissão de preços
 
-*Conta
+* Conta
 
 localhost:8080/contas/
 
@@ -32,7 +32,7 @@ PUT - Alteração de Contas
 
 DELETE - Remoção de Contas
 
-*Monitoramento
+* Monitoramento
 
 localhost:8080/contas/{conta_id}/monitoramentos
 
@@ -46,7 +46,7 @@ PUT - Alteração de Monitoramentos
 
 DELETE - Remoção de Monitoramentos
 
-*Transações
+* Transações
 
 localhost:8080/contas/{conta_id}/transacoes
 
